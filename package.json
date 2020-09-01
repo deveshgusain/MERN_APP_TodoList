@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "webpack -p",
+    "build": "concurrently \"webpack -p\" \"npm run initialize\" ",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "npm run server",
     "dev": "webpack-dev-server --open",
