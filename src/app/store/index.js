@@ -10,7 +10,7 @@ import * as mutations from "./mutations";
 
 export const store = createStore(
   combineReducers({
-    session(userSession = defaultState.session || {}, action) {
+    session(userSession = {}, action) {
       let { type, authenticated, session } = action;
       switch (type) {
         case mutations.SET_STATE:
@@ -60,11 +60,29 @@ export const store = createStore(
       }
       return tasks;
     },
-    comments(comments = []) {
+    comments(comments = [], action) {
+      switch (action.type) {
+        case mutations.SET_STATE:
+          return action.state.comments;
+        case mutations.ADD_COMMENT:
+          return [
+            ...comments,
+            {
+              id: action.commentID,
+              task: action.taskID,
+              owner: action.ownerID,
+              content: action.content,
+            },
+          ];
+      }
       return comments;
     },
-    users(users = []) {
-      return users;
+    user(user = {}, action) {
+      switch (action.type) {
+        case mutations.SET_STATE:
+          return { ...user, name: action.state.username };
+      }
+      return user;
     },
     groups(groups = [], action) {
       switch (action.type) {

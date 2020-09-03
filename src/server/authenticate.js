@@ -4,15 +4,20 @@ import { connectDB } from "./connect-db";
 
 const authenticationTokens = [];
 
-async function assembleUserState(user) {
+async function assembleUserState(user, username) {
   let db = await connectDB();
 
   let tasks = await db.collection("tasks").find({ owner: user.id }).toArray();
   let groups = await db.collection("groups").find({ owner: user.id }).toArray();
-
+  let comments = await db
+    .collection("comments")
+    .find({ owner: user.id })
+    .toArray();
   return {
     tasks,
     groups,
+    username,
+    comments,
     session: { authenticated: "AUTHENTICATED", id: user.id },
   };
 }
@@ -39,8 +44,7 @@ export const authenticationRoute = (app) => {
       token,
       userID: user.id,
     });
-    let state = await assembleUserState(user);
-
+    let state = await assembleUserState(user, username);
     res.send({ token, state });
   });
 };

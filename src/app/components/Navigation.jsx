@@ -2,12 +2,22 @@ import React from "react";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
-const Navigation = () => (
-  <div>
-    <Link to="/dashboard">
-      <h1>My Application</h1>
-    </Link>
-  </div>
-);
+const Navigation = ({ username }) => {
+  let welcome = username ? `Welcome, ${username}!` : "";
+  return (
+    <nav>
+      <Link to="/dashboard" style={{ fontSize: "35px" }}>
+        Daily Organizer
+      </Link>
+      <h3>{welcome}</h3>
+    </nav>
+  );
+};
 
-export const ConnectedNavigation = connect((state) => state)(Navigation);
+const mapStateToProps = (state) => {
+  return {
+    username: state.user.name,
+  };
+};
+
+export const ConnectedNavigation = connect(mapStateToProps)(Navigation);

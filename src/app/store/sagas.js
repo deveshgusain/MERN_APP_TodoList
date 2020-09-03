@@ -71,3 +71,21 @@ export function* userAuthenticationSaga() {
     }
   }
 }
+
+export function* addingCommentSaga() {
+  while (true) {
+    const { taskID, content } = yield take(mutations.REQUEST_ADD_COMMENT);
+    const ownerID = "U1";
+    const commentID = uuid();
+    yield put(mutations.addComment(taskID, ownerID, content, commentID));
+    const { res } = yield axios.post(url + `/comment/add`, {
+      comment: {
+        task: taskID,
+        owner: ownerID,
+        content,
+        id: commentID,
+      },
+    });
+    console.info("Got Response ", res);
+  }
+}

@@ -23,7 +23,6 @@ export const Main = () => (
   <Router history={history}>
     <Provider store={store}>
       <div>
-        {/* <ConnectedDashBoard /> */}
         <ConnectedNavigation />
         <Route exact path="/" component={ConnectedLogin}></Route>
         <Route
