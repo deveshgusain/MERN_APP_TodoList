@@ -8,7 +8,7 @@ async function assembleUserState(user, username) {
   let db = await connectDB();
 
   let tasks = await db.collection("tasks").find({ owner: user.id }).toArray();
-  let groups = await db.collection("groups").find({ owner: user.id }).toArray();
+  let groups = await db.collection("groups").find().toArray();
   let comments = await db
     .collection("comments")
     .find({ owner: user.id })
@@ -46,5 +46,26 @@ export const authenticationRoute = (app) => {
     });
     let state = await assembleUserState(user, username);
     res.send({ token, state });
+  });
+
+  app.post("/user/new", async (req, res) => {
+    const { username, password } = req.body;
+    let db = await connectDB();
+    let collection = db.collection("users");
+    let user = await collection.findOne({ name: username });
+    if (user) {
+      return res.status(500).send({ massage: "User Already Found" });
+    }
+    let hash = md5(password);
+    let id = uuid();
+    user = {
+      id,
+      name: username,
+      passwordHash: hash,
+    };
+    await collection.insertOne(user);
+
+    let state = await assembleUserState(user, username);
+    res.status(200).send({ id, state });
   });
 };

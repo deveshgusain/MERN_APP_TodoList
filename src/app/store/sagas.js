@@ -9,8 +9,7 @@ const url = process.env.NODE_ENV == `production` ? "" : "http://localhost:7777";
 
 export function* taskCreationSaga() {
   while (true) {
-    const { groupID } = yield take(mutations.REQUEST_TASK_CREATION);
-    const ownerID = "U1";
+    const { groupID, ownerID } = yield take(mutations.REQUEST_TASK_CREATION);
     const taskID = uuid();
     yield put(mutations.createTask(taskID, groupID, ownerID));
     const { res } = yield axios.post(url + `/task/new`, {
@@ -44,6 +43,23 @@ export function* taskModificationSaga() {
   }
 }
 
+export function* addingCommentSaga() {
+  while (true) {
+    const { taskID, ownerID, commentID, content } = yield take(
+      mutations.ADD_COMMENT
+    );
+    const { res } = yield axios.post(url + `/comment/new`, {
+      comment: {
+        task: taskID,
+        owner: ownerID,
+        content,
+        id: commentID,
+      },
+    });
+    console.info("Got Response ", res);
+  }
+}
+
 export function* userAuthenticationSaga() {
   while (true) {
     const { username, password } = yield take(
@@ -72,20 +88,23 @@ export function* userAuthenticationSaga() {
   }
 }
 
-export function* addingCommentSaga() {
+export function* createUserSaga() {
   while (true) {
-    const { taskID, content } = yield take(mutations.REQUEST_ADD_COMMENT);
-    const ownerID = "U1";
-    const commentID = uuid();
-    yield put(mutations.addComment(taskID, ownerID, content, commentID));
-    const { res } = yield axios.post(url + `/comment/add`, {
-      comment: {
-        task: taskID,
-        owner: ownerID,
-        content,
-        id: commentID,
-      },
-    });
-    console.info("Got Response ", res);
+    const { username, password } = yield take(mutations.CREATE_USER);
+    try {
+      const { data } = yield axios.post(url + `/user/new`, {
+        username,
+        password,
+      });
+      console.log("Created ", data);
+      yield put(mutations.setState(data.state));
+      yield put(mutations.processingAuthenticateUser(mutations.AUTHENTICATED));
+      history.push("/dashboard");
+    } catch (e) {
+      console.error("Error ", e);
+      yield put(
+        mutations.processingAuthenticateUser(mutations.USERNAME_RESERVED)
+      );
+    }
   }
 }

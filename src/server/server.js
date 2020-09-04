@@ -14,9 +14,9 @@ app.use(cors(), bodyParser.urlencoded({ extended: true }), bodyParser.json());
 
 app.listen(port, console.log("Server is listning at port ", port));
 
-// app.get("/", (req, res) => {
-//   res.send("Hello");
-// });
+app.get("/", (req, res) => {
+  res.send("Hello");
+});
 
 authenticationRoute(app);
 
@@ -39,7 +39,7 @@ app.post("/task/update", async (req, res) => {
   res.status(200).send();
 });
 
-app.post("/comment/add", async (req, res) => {
+app.post("/comment/new", async (req, res) => {
   let comment = req.body.comment;
   await addComment(comment);
   res.status(200).send();

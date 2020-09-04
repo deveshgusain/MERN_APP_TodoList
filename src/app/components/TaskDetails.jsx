@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { TaskList } from "./TaskList";
 import { Link } from "react-router-dom";
 import * as mutations from "../store/mutations";
+import uuid from "uuid";
 
 const TaskDetails = ({
   id,
@@ -14,6 +15,7 @@ const TaskDetails = ({
   setTaskGroup,
   setTaskName,
   requestAddComment,
+  ownerID,
 }) => (
   <div className="card p-3 col-6">
     <div>
@@ -52,15 +54,25 @@ const TaskDetails = ({
     </div>
 
     <div>
-      <form onSubmit={requestAddComment}>
-        <input type="text" placeholder="write comment here" name="comment" />
-        <button type="submit">Add Comment</button>
+      <form
+        onSubmit={(e) => requestAddComment(e, ownerID)}
+        className="form-inline"
+      >
+        <input
+          type="text"
+          placeholder="write comment here"
+          name="comment"
+          className="form-control"
+        />
+        <button type="submit" className="form-control btn btn-primary">
+          Add Comment
+        </button>
       </form>
     </div>
 
     <div>
       <Link to="/dashboard">
-        <botton className="btn btn-primary mt-2">Done</botton>
+        <button className="btn btn-primary mt-2">Done</button>
       </Link>
     </div>
   </div>
@@ -71,13 +83,14 @@ const mapStateToProps = (state, ownProps) => {
   let task = state.tasks.find((task) => task.id === id);
   let comments = state.comments.filter((comment) => comment.task === id);
   let groups = state.groups;
-  console.info("Comments ", comments);
+  let ownerID = state.session.id;
   return {
     id,
     task,
     groups,
     comments,
     isComplete: task.isComplete,
+    ownerID,
   };
 };
 
@@ -93,11 +106,12 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     setTaskName(e) {
       dispatch(mutations.setTaskName(id, e.target.value));
     },
-    requestAddComment(e) {
+    requestAddComment(e, ownerID) {
       e.preventDefault();
       let content = e.target["comment"].value;
+      let commentID = uuid();
       e.target["comment"].value = "";
-      dispatch(mutations.requestAddComment(id, content));
+      dispatch(mutations.addComment(id, ownerID, commentID, content));
     },
   };
 };

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { requestTaskCreation } from "../store/mutations";
 import { Link } from "react-router-dom";
 
-export const TaskList = ({ tasks, name, id, createNewTask }) => (
+export const TaskList = ({ tasks, name, id, ownerID, createNewTask }) => (
   <div className="card p-2 m-2">
     <h3>{name}</h3>
     <div>
@@ -14,7 +14,7 @@ export const TaskList = ({ tasks, name, id, createNewTask }) => (
       ))}
     </div>
     <button
-      onClick={() => createNewTask(id)}
+      onClick={() => createNewTask(id, ownerID)}
       className="btn btn-primary btn-block mt-2"
     >
       Add New
@@ -23,19 +23,21 @@ export const TaskList = ({ tasks, name, id, createNewTask }) => (
 );
 
 function mapStateToProps(state, ownProps) {
-  const groupId = ownProps.id;
+  const groupID = ownProps.id;
+  const ownerID = state.session.id;
   return {
     name: ownProps.name,
-    id: groupId,
-    tasks: state.tasks.filter((task) => task.group === groupId),
+    ownerID,
+    id: groupID,
+    tasks: state.tasks.filter((task) => task.group === groupID),
   };
 }
 
 function mapDispatchToProps(dispatch, ownProps) {
   return {
-    createNewTask(id) {
-      console.log("Creating new Task... ", id);
-      dispatch(requestTaskCreation(id));
+    createNewTask(id, ownerID) {
+      console.log("Creating new Task... ", id, " ", ownerID);
+      dispatch(requestTaskCreation(id, ownerID));
     },
   };
 }

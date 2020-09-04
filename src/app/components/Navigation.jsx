@@ -5,10 +5,12 @@ import { Link } from "react-router-dom";
 const Navigation = ({ username }) => {
   let welcome = username ? `Welcome, ${username}!` : "";
   return (
-    <nav>
-      <Link to="/dashboard" style={{ fontSize: "35px" }}>
-        Daily Organizer
-      </Link>
+    <nav style={{ fontSize: "35px" }}>
+      <Link to="/dashboard">Daily Organizer</Link>
+      {"  |  "}
+      <Link to="/login">Login</Link>
+      {"  |  "}
+      <Link to="/signUp">Signup</Link>
       <h3>{welcome}</h3>
     </nav>
   );

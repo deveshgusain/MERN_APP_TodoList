@@ -8,11 +8,13 @@ import { history } from "../store/history";
 import { ConnectedNavigation } from "./Navigation";
 import { ConnectedTaskDetails } from "./TaskDetails";
 import { Redirect } from "react-router";
+import { Home } from "./home";
+import { ConnectedSignup } from "./Signup";
 
 const RouteGuard = (Component) => ({ match }) => {
   console.info("Route guard ", match);
   if (!store.getState().session.authenticated) {
-    return <Redirect to="/" />;
+    return <Redirect to="/login" />;
   }
   {
     return <Component match={match} />;
@@ -24,7 +26,9 @@ export const Main = () => (
     <Provider store={store}>
       <div>
         <ConnectedNavigation />
-        <Route exact path="/" component={ConnectedLogin}></Route>
+        <Route exact path="/" component={Home}></Route>
+        <Route exact path="/login" component={ConnectedLogin}></Route>
+        <Route exact path="/signup" component={ConnectedSignup}></Route>
         <Route
           exact
           path="/dashboard"

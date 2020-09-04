@@ -24,7 +24,11 @@ const LoginComponent = ({ authenticateUser, authenticated }) => {
         {authenticated === mutations.NOT_AUTHENTICATED ? (
           <p>Login Incorrect</p>
         ) : null}
-        <button type="submit" className="form-control mt-2 btn btn-primary">
+        <button
+          type="submit"
+          disabled={authenticated === `PROCESSING`}
+          className="form-control mt-2 btn btn-primary"
+        >
           Login
         </button>
       </form>
