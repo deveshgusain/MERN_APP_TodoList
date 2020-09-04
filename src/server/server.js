@@ -14,10 +14,6 @@ app.use(cors(), bodyParser.urlencoded({ extended: true }), bodyParser.json());
 
 app.listen(port, console.log("Server is listning at port ", port));
 
-app.get("/", (req, res) => {
-  res.send("Hello");
-});
-
 authenticationRoute(app);
 
 if (process.env.NODE_ENV == `production`) {
