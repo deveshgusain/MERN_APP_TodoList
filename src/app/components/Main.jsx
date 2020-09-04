@@ -8,7 +8,7 @@ import { history } from "../store/history";
 import { ConnectedNavigation } from "./Navigation";
 import { ConnectedTaskDetails } from "./TaskDetails";
 import { Redirect } from "react-router";
-import { Home } from "./home";
+import { Home } from "./Home";
 import { ConnectedSignup } from "./Signup";
 
 const RouteGuard = (Component) => ({ match }) => {
